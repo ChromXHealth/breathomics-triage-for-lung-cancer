@@ -103,4 +103,6 @@ repository-code: https://github.com/ChromXHealth/breathomics-triage-for-lung-can
 version: 1.0.0
 date-released: 2026-11-24
 license: MIT
-notes: The version DOI will be added when the archived release is published.
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24504321

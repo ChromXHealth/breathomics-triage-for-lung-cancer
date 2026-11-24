@@ -1,5 +1,7 @@
 # Toward breathomics-guided pre-imaging triage for lung cancer detection
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24504321.svg)](https://doi.org/10.5281/zenodo.24504321)
+
 Analysis source code associated with the Cell manuscript *Toward
 breathomics-guided pre-imaging triage for lung cancer detection*, including
 the figure code embedded in the analysis workflows.
