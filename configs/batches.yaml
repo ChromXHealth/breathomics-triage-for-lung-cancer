@@ -1,0 +1,32 @@
+# Batch assignment rules for workflow 02 ComBat correction.
+#
+# This file is NOT loaded by default: pass it explicitly via
+# `--batch-config configs/batches.yaml`. Without a batch config, workflow 02
+# skips ComBat correction and exports the normalized matrix instead. The file
+# is kept in the repository to reproduce the source study's results.
+#
+# Each top-level key under `batches` is a DeviceID; the special key "*"
+# provides the fallback rules for any device not listed explicitly. Within a
+# device, `rules` is an ordered list evaluated first-match-wins: each rule's
+# remaining keys are time conditions (`lt`, `le`, `gt`, `ge` against the
+# sample's AnalysisTime). Samples matching no rule fall through to `default`.
+#
+# The committed values reproduce the source study's device and
+# acquisition-time splits. They are study-specific: users analyzing their own
+# data must determine their acquisition batches (for example from run
+# logs or QC drift) and edit this file accordingly.
+batches:
+  US1640L223:
+    rules:
+      - {batch: Batch-1, le: "2024-10-15 09:00:00"}
+      - {batch: Batch-2, lt: "2024-10-28 09:00:00"}
+    default: Batch-3
+  US7450L437:
+    rules:
+      - {batch: Batch-4, lt: "2024-07-31 10:18:00"}
+    default: Batch-5
+  "*":
+    rules:
+      - {batch: Batch-7, le: "2024-07-27 10:05:00"}
+      - {batch: Batch-6, gt: "2024-07-27 10:05:00", lt: "2024-08-29 10:06:00"}
+    default: Batch-8

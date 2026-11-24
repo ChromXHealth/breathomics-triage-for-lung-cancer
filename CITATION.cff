@@ -1,0 +1,106 @@
+cff-version: 1.2.0
+title: Toward breathomics-guided pre-imaging triage for lung cancer detection
+message: If you use this software, please cite the associated manuscript and this archived software version.
+type: software
+authors:
+  - given-names: Hengrui
+    family-names: Liang
+  - given-names: Bo
+    family-names: Tian
+  - given-names: Minhua
+    family-names: Peng
+  - given-names: Sitong
+    family-names: Chen
+  - given-names: Ran
+    family-names: Zhong
+  - given-names: Zhuxing
+    family-names: Chen
+  - given-names: Pengnan
+    family-names: Fan
+  - given-names: Wenxi
+    family-names: Wang
+  - given-names: Shiwen
+    family-names: Xue
+  - given-names: Yueming
+    family-names: Su
+  - given-names: Xia
+    family-names: Ren
+  - given-names: Qifang
+    family-names: Gu
+  - given-names: Xusen
+    family-names: Zou
+  - given-names: Wei
+    family-names: Zhang
+  - given-names: Runchen
+    family-names: Wang
+  - given-names: Xianzhe
+    family-names: Fan
+  - given-names: Zhanpeng
+    family-names: Jiang
+  - given-names: Ailifeire
+    family-names: Aihemaiti
+  - given-names: Fuhao
+    family-names: Xu
+  - given-names: Zihui
+    family-names: Xiong
+  - given-names: Ruihan
+    family-names: Lin
+  - given-names: Ziya
+    family-names: Yang
+  - given-names: Xiangcheng
+    family-names: Qiu
+  - given-names: Hong
+    family-names: Wang
+  - given-names: Xiaofan
+    family-names: Su
+  - given-names: Maoyuan
+    family-names: Ren
+  - given-names: Jun
+    family-names: Kong
+  - given-names: Weiliang
+    family-names: Liang
+  - given-names: Wei
+    family-names: Lin
+  - given-names: Shuo
+    family-names: Hong
+  - given-names: Yaming
+    family-names: Xiong
+  - given-names: Min
+    family-names: Zhu
+  - given-names: Xiaowen
+    family-names: Zhang
+  - given-names: Cheng
+    family-names: Zeng
+  - given-names: Yanwen
+    family-names: Ning
+  - given-names: Xingbei
+    family-names: Dong
+  - given-names: Yanwei
+    family-names: Zhang
+  - given-names: Haoran
+    family-names: Liu
+  - given-names: Shaohua
+    family-names: Xie
+  - given-names: Run
+    family-names: Xiang
+  - given-names: Wenhua
+    family-names: Liang
+  - given-names: Thiery
+    family-names: Paul
+  - given-names: Kang
+    family-names: Zhang
+  - given-names: Shengli
+    family-names: Yang
+  - given-names: Nanshan
+    family-names: Zhong
+  - given-names: Junqi
+    family-names: Wang
+  - given-names: Qiang
+    family-names: Li
+  - given-names: Jianxing
+    family-names: He
+repository-code: https://github.com/ChromXHealth/breathomics-triage-for-lung-cancer
+version: 1.0.0
+date-released: 2026-11-24
+license: MIT
+notes: The version DOI will be added when the archived release is published.

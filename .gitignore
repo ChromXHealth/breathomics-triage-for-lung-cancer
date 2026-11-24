@@ -1,0 +1,38 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.DS_Store
+
+# Study data and controlled inputs
+data/
+*.xls
+*.xlsx
+
+# Generated analysis artifacts
+outputs/
+results/
+predictions/
+models/
+analysis-output/
+
+# Study-specific reference material (internal notebooks and the manuscript
+# PDF; never for public release)
+.ref-notebooks/
+
+# Local working notes (explicitly not for git, see the file header)
+questions_log.md
+
+# Study-specific cohort split definition (kept local, test-only)
+configs/cohort_split.yaml
+
+# Editor settings
+.vscode/
+
+# Generated figures
+*.png
+*.pdf
+*.svg
+
+# Local configuration
+configs/local*.yaml

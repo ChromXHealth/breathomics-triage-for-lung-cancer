@@ -1,0 +1,13 @@
+# Preprocessing parameters for workflow 01 (SNR QC and sensitivity correction).
+snr_qc:
+  snr_threshold: 10
+  voc_call_rate_threshold: 0.8
+  sample_call_rate_threshold: 0.8
+  impute_main_comparisons: false
+sensitivity_correction:
+  interval_boundary: open
+  drop_samples_before_first_qc: true
+  excluded_sample_ids: []
+batch_correction: {}
+environmental_voc: {}
+splitting: {}

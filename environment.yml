@@ -1,0 +1,23 @@
+name: breath-voc-analysis
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9.18
+  - pip
+  - pip:
+      - numpy
+      - pandas
+      - openpyxl
+      - scipy
+      - scikit-learn==1.5.1
+      - xgboost==2.1.4
+      - statsmodels
+      - combat
+      - pyopls
+      - plotly
+      - kaleido>=1
+      - matplotlib
+      - matplotlib-venn
+      - shap
+      - tqdm
+      - pyyaml
