@@ -1,4 +1,4 @@
-# Toward breathomics-guided pre-imaging triage for lung cancer detection
+# Pre-imaging stratification for lung cancer detection based on breath exhalate
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24504320.svg)](https://doi.org/10.5281/zenodo.24504320)
 
@@ -29,18 +29,22 @@ chromatography–mass spectrometry (TD-GC-MS) in a multicenter study of
 10,772 participants.
 
 - Developed in a discovery cohort (n = 7,302), the locked model achieved an
-  area under the curve (AUC) of 0.92 in the external cohort (n = 2,885).
-- The model identified 96.4% of stage I and 94.6% of stage IA1 cancers with
-  70.6% specificity.
-- In a nested community subset, sensitivity was 72.7% and the negative
-  predictive value reached 99.7%.
-- Exploratory postoperative analysis showed lower model scores after
+  area under the curve (AUC) of 0.92 in the mixed external cohort
+  (n = 2,885).
+- At a cutoff of 0.27, the model identified 96.4% of stage I and 94.6% of
+  stage IA1 cancers with 70.6% specificity.
+- In the nested community-screening subset at a cutoff of 0.75, sensitivity
+  was 72.7% and the negative predictive value was 99.7%.
+- Exploratory post-operative analysis showed lower model scores after tumour
   resection.
 - Aggregate proof-of-concept evaluation of portable micro-GC in an enriched
   cohort (n = 585) yielded an AUC of 0.90.
 
 The study was registered at ClinicalTrials.gov as NCT06518655,
 NCT06528418, and NCT06988943.
+
+If any study description or numerical value in this repository differs from
+the associated manuscript, the manuscript is authoritative.
 
 ## Repository Scope
 
@@ -196,7 +200,7 @@ README badge uses the Zenodo **concept DOI**, which resolves to the latest
 archived version. Each GitHub release receives its own version-specific DOI.
 Please cite both the associated manuscript and the software version used.
 
-The current development version is **v1.0.1-rc**; changes relative to the
+The current development version is **v1.0.2-rc**; changes relative to the
 initial archive are listed in `CHANGELOG.md`.
 
 ## License

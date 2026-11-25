@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.0.2-rc — 2026-11-25
+
+### Documentation and release metadata
+
+- Updated the manuscript and repository title to *Pre-imaging stratification
+  for lung cancer detection based on breath exhalate*.
+- Updated the current development version to `v1.0.2-rc`.
+- Positioned GitHub release notes to introduce the repository first, with a
+  concise changes section and a pointer to this changelog.
+- Aligned the README performance summary with the latest manuscript,
+  including the sensitivity- and specificity-prioritized cutoffs.
+- Added a documentation fallback stating that the manuscript is authoritative
+  if any study description or numerical value differs.
+
 ## v1.0.1-rc — 2026-11-25
 
 ### Documentation and release metadata

@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-title: Toward breathomics-guided pre-imaging triage for lung cancer detection
+title: Pre-imaging stratification for lung cancer detection based on breath exhalate
 message: If you use this software, please cite the associated manuscript and this archived software version.
 type: software
 authors:
@@ -100,7 +100,7 @@ authors:
   - given-names: Jianxing
     family-names: He
 repository-code: https://github.com/ChromXHealth/breathomics-triage-for-lung-cancer
-version: 1.0.1-rc
+version: 1.0.2-rc
 date-released: 2026-11-25
 license: MIT
 identifiers:
