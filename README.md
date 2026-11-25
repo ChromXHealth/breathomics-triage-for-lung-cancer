@@ -2,8 +2,8 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24504320.svg)](https://doi.org/10.5281/zenodo.24504320)
 
-Analysis source code associated with the Cell manuscript *Toward
-breathomics-guided pre-imaging triage for lung cancer detection*, including
+Analysis source code associated with the Cell manuscript *Pre-imaging
+stratification for lung cancer detection based on breath exhalate*, including
 the figure code embedded in the analysis workflows.
 
 This repository is shared for research transparency and as a reference for
