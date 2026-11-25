@@ -58,6 +58,7 @@ from src.io import write_csv
 from src.modelling import (
     DEFAULT_MODEL_PARAMETERS,
     MODEL_REGISTRY,
+    apply_random_state,
     cross_validated_predictions,
     select_binary_labels,
 )
@@ -69,7 +70,7 @@ OUTPUT_SUBDIR = "06_lc_nonlc_modelling"
 # Source-analysis comparison order.
 MODEL_ORDER = ("logistic", "random_forest", "knn", "xgboost", "svm")
 # Fixed seed for the CV splitter so every model family sees identical fold
-# partitions; --random-state overrides it for fully reproducible reruns.
+# partitions; --random-state overrides it for deterministic reruns.
 DEFAULT_CV_SEED = 42
 
 
@@ -77,7 +78,7 @@ def add_model_arguments(parser: argparse.ArgumentParser) -> None:
     """Attach the model arguments shared by both modes."""
     parser.add_argument("--model-parameters", type=json.loads, default=None)
     parser.add_argument("--positive-label", default="LC")
-    parser.add_argument("--random-state", type=int, default=None)
+    parser.add_argument("--random-state", type=int, default=42)
     parser.add_argument(
         "--output-dir",
         type=Path,
@@ -220,6 +221,7 @@ def run_base(args: argparse.Namespace) -> None:
         parameters = DEFAULT_MODEL_PARAMETERS.get(model_name, {}).copy()
         if args.model_parameters:
             parameters.update(args.model_parameters)
+        parameters = apply_random_state(model_name, parameters, cv_seed)
 
         train_folds, validation_folds, independent = cross_validated_predictions(
             MODEL_REGISTRY[model_name],
@@ -356,6 +358,7 @@ def run_confounding(args: argparse.Namespace) -> None:
     parameters = DEFAULT_MODEL_PARAMETERS.get(args.model, {}).copy()
     if args.model_parameters:
         parameters.update(args.model_parameters)
+    parameters = apply_random_state(args.model, parameters, args.random_state)
 
     data_dir = args.output_dir / "data"
     figs_dir = args.output_dir / "figs"

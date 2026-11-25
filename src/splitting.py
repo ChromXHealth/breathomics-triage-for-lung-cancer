@@ -8,7 +8,7 @@ from typing import Sequence
 import pandas as pd
 import yaml
 
-from .evaluation import require_columns
+from .evaluation import require_columns, require_unique_sample_ids
 
 SMOKING_HISTORY_MAP = {
     "never or quit >1 yr": "F",
@@ -26,6 +26,8 @@ def prepare_analysis_records(
     """Align measurements and clinical records and apply eligibility rules."""
     require_columns(voc, ["SampleID"])
     require_columns(clinical, ["SampleID", "LC_nonLC", "label_postOp"])
+    require_unique_sample_ids(voc)
+    require_unique_sample_ids(clinical)
 
     voc = voc.loc[voc["SampleID"].isin(clinical["SampleID"])].copy()
     clinical = clinical.loc[clinical["SampleID"].isin(voc["SampleID"])].copy()
@@ -91,7 +93,10 @@ def select_by_side(
         parts.append(select_identifier_prefixes(frame, id_prefixes))
     if not parts:
         raise ValueError("A cohort side needs at least one project or identifier prefix.")
-    return pd.concat(parts, ignore_index=True)
+    # A record selected by both a project and a prefix is still one record.
+    return pd.concat(parts, ignore_index=True).drop_duplicates(
+        subset="SampleID", keep="first"
+    )
 
 
 def split_discovery_and_external(
@@ -105,6 +110,11 @@ def split_discovery_and_external(
     """Create discovery and external datasets with aligned clinical records."""
     discovery = select_by_side(voc, discovery_projects, discovery_id_prefixes)
     external = select_by_side(voc, external_projects, external_id_prefixes)
+    overlap = set(discovery["SampleID"]) & set(external["SampleID"])
+    if overlap:
+        raise ValueError(
+            f"Discovery and external cohorts overlap for {len(overlap)} SampleID(s)."
+        )
     discovery_clinical = clinical.loc[clinical["SampleID"].isin(discovery["SampleID"])].copy()
     external_clinical = clinical.loc[clinical["SampleID"].isin(external["SampleID"])].copy()
     return discovery, discovery_clinical, external, external_clinical

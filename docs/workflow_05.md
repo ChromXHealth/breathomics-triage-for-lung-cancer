@@ -41,6 +41,8 @@ All paths are caller-supplied:
   `VOC ID` column; a `marker_flag` column is honored if present. Without
   it, the flagged candidates are used unreviewed and an explicit note is
   logged — production runs must pass the reviewed table.
+  `configs/authorized_markers.example.csv` documents the schema only; it is
+  not the source study's final reviewed panel.
 - `--output-dir`: destination directory.
 
 The default clinical covariate contract contains `gender`, `age`, `BMI`, `dining_status`, `smoke_hist`, `second-hand_smoke_status`, `env_smoke_status`, `hazardous_substance_exposure`, `family_Ca_hist`, `lung_disease_hist`, `other_disease_hist`, and `Ca_hist`.

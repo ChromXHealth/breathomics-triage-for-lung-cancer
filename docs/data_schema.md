@@ -2,7 +2,7 @@
 
 ## General Rules
 
-No study data are included in this repository. Users must supply authorized local files matching the contracts below. Column names are case-sensitive. Missing or duplicated required fields must produce an explicit error.
+No study data tables are included in this GitHub repository. A separate public Mendeley Data archive provides raw Agilent GC-MS files for 200 External Test Set samples ([DOI: 10.17632/g7w5yjsr9g.1](https://doi.org/10.17632/g7w5yjsr9g.1)); it contains no clinical labels, demographic variables, or derived feature matrices and therefore is not an analysis-ready input package. Users must supply appropriately prepared local files matching the contracts below. Full study data and controlled assets require author contact, review, and approval. Column names are case-sensitive. Missing or duplicated required fields must produce an explicit error. `SampleID` must be non-missing and unique within each table used for a one-to-one join; duplicate identifiers and unexpected unmatched records must be reported rather than silently discarded.
 
 Source identifiers, labels, clinical fields, prediction scores, and cohort assignments must not be modified by subgroup analysis or figure-generation code.
 
@@ -88,14 +88,14 @@ The default feature-matrix interface is:
 |---|---|---|
 | `SampleID` | string | De-identified sample identifier |
 | `label` | string or integer | Analysis label with an explicitly configured positive class |
-| Ordered VOC columns | numeric | Exactly twelve VOC measurements in the configured model order |
+| Ordered VOC columns | numeric | VOC measurements in the reviewed, configured model order; the study panel size is defined by its authorized marker table |
 
 Model code must select features by their configured names rather than by their physical positions in the input table. Training, validation, and external inference must use the same feature contract. External inference must not trigger model fitting or threshold recalibration.
 
 ## Clinical Cohort Table (cinfo)
 
-Used by workflows 04 (split outputs), 06 confounding mode (covariates), 13
-(`confounder-models`), and 07 (subgroups). One row per participant.
+Used by workflows 04 (split outputs), 06 confounding mode (covariates), and
+07 (`confounder-models` and `subgroups`). One row per participant.
 
 | Column | Type | Description |
 |---|---|---|

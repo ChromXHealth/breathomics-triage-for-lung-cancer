@@ -17,12 +17,12 @@ and cohort assignments are never modified.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Optional, Sequence
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
 
-from .evaluation import evaluate_predictions, require_columns, wilson_score_interval
+from .evaluation import evaluate_predictions, require_columns
 
 NONLC_LABEL = "nonLC"
 UNKNOWN_VALUE = "UNK"
@@ -135,7 +135,12 @@ def attach_imaging_labels(
     require_columns(predictions, ["SampleID", "label", "pred"])
     available = [column for column in ("ajcc_stage", "nodule_size", "pathology_subtype", "nodule_type", "multiplicity") if column in imaging_labels.columns]
     require_columns(imaging_labels, ["SampleID", *available])
-    merged = predictions.merge(imaging_labels[["SampleID", *available]], on="SampleID", how="left")
+    merged = predictions.merge(
+        imaging_labels[["SampleID", *available]],
+        on="SampleID",
+        how="left",
+        validate="many_to_one",
+    )
     return merged.fillna({column: UNKNOWN_VALUE for column in available})
 
 
@@ -147,7 +152,12 @@ def attach_clinical_covariates(
     require_columns(predictions, ["SampleID", "label", "pred"])
     wanted = [column for column in ("gender", "age", "smoke_hist", "copd", "proj") if column in clinical_info.columns]
     require_columns(clinical_info, ["SampleID", *wanted])
-    merged = predictions.merge(clinical_info[["SampleID", *wanted]], on="SampleID", how="left")
+    merged = predictions.merge(
+        clinical_info[["SampleID", *wanted]],
+        on="SampleID",
+        how="left",
+        validate="many_to_one",
+    )
     if "age" in merged.columns:
         merged["age_group"] = merged["age"].map(map_age_group)
     return merged
@@ -160,7 +170,12 @@ def attach_nonlc_subtypes(
     """Merge the joint non-LC subtype label table onto a prediction frame."""
     require_columns(predictions, ["SampleID", "label", "pred"])
     require_columns(subtype_labels, ["SampleID", "nonlc_subtype"])
-    return predictions.merge(subtype_labels[["SampleID", "nonlc_subtype"]], on="SampleID", how="left")
+    return predictions.merge(
+        subtype_labels[["SampleID", "nonlc_subtype"]],
+        on="SampleID",
+        how="left",
+        validate="many_to_one",
+    )
 
 
 def build_vis_labels(

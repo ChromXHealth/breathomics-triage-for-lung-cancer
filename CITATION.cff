@@ -100,9 +100,10 @@ authors:
   - given-names: Jianxing
     family-names: He
 repository-code: https://github.com/ChromXHealth/breathomics-triage-for-lung-cancer
-version: 1.0.0
-date-released: 2026-11-24
+version: 1.0.1-rc
+date-released: 2026-11-25
 license: MIT
 identifiers:
   - type: doi
-    value: 10.5281/zenodo.24504321
+    value: 10.5281/zenodo.24504320
+    description: Concept DOI for this software repository; each archived release also has its own version-specific DOI.

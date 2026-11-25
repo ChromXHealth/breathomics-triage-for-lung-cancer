@@ -18,7 +18,7 @@ All paths and cohort-selection values are caller-supplied:
   id-prefix lists are optional and select cohorts split inside one project
   (matched against the start of `SampleID`).
 
-Repeat project arguments for every included study. Identifier-prefix arguments preserve special cohort splits based on the start of `SampleID`. No study-specific project names are embedded in the public code. The repository's `configs/cohort_split.yaml` records the source study's split for reproduction testing only; it is study-specific, is never loaded by default, and must not be treated as a default.
+Repeat project arguments for every included study. Identifier-prefix arguments preserve special cohort splits based on the start of `SampleID`. No study-specific project names are embedded in the public code. `configs/cohort_split.example.yaml` documents the schema only and is not the source-study split. Numerical reproduction requires an authorized study-specific config; no split file is loaded by default.
 
 ## Execution
 

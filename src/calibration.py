@@ -24,6 +24,7 @@ def compute_calibration_curve(
     return_ci: bool = True,
     n_bootstrap: int = 1000,
     ci_alpha: float = 0.05,
+    random_state: int | None = 42,
 ) -> dict[str, Any]:
     """Compute a calibration curve with per-bin bootstrap intervals.
 
@@ -105,6 +106,7 @@ def compute_calibration_curve(
 
     # Bootstrap confidence intervals (required for clinical reporting).
     if return_ci:
+        rng = np.random.RandomState(random_state)
         ci_lower: list[float] = []
         ci_upper: list[float] = []
 
@@ -120,7 +122,7 @@ def compute_calibration_curve(
                 boot_means = []
                 y_true_bin = y_true[in_bin]
                 for _ in range(n_bootstrap):
-                    boot_sample = resample(y_true_bin, random_state=None)
+                    boot_sample = resample(y_true_bin, random_state=rng)
                     boot_means.append(np.mean(boot_sample))
 
                 boot_means = np.sort(boot_means)
@@ -144,6 +146,7 @@ def compute_brier_score(
     return_ci: bool = True,
     n_bootstrap: int = 1000,
     ci_alpha: float = 0.05,
+    random_state: int | None = 42,
 ) -> dict[str, Any]:
     """Compute the Brier score with its decomposition and bootstrap interval.
 
@@ -194,9 +197,10 @@ def compute_brier_score(
 
     # Bootstrap confidence interval for the Brier score.
     if return_ci:
+        rng = np.random.RandomState(random_state)
         boot_scores = []
         for _ in range(n_bootstrap):
-            indices = resample(range(len(y_true)), random_state=None)
+            indices = resample(range(len(y_true)), random_state=rng)
             boot_scores.append(brier_score_loss(y_true[indices], y_pred[indices]))
 
         boot_scores = np.sort(boot_scores)

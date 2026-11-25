@@ -51,7 +51,7 @@ python -m workflows.06_lc_nonlc_modelling base \
   --postop-set /path/to/differential_outputs/rfecv_selected_postOp_set.csv
 ```
 
-Useful optional arguments: `--models` (comma-separated subset of the five families; default: all five), `--cv` (default 5), `--eval-fold` (default 2), `--min-sensitivity` (default 0.95), `--n-bootstrap` (AUC intervals, default 1000), `--model-parameters` (JSON override applied to every family), `--random-state` (overrides the fixed CV splitter seed for fully reproducible reruns), `--skip-figures`.
+Useful optional arguments: `--models` (comma-separated subset of the five families; default: all five), `--cv` (default 5), `--eval-fold` (default 2), `--min-sensitivity` (default 0.95), `--n-bootstrap` (AUC intervals, default 1000), `--model-parameters` (JSON override applied to every family), `--random-state` (default 42; propagated to CV splitting, supported estimators, and bootstrap intervals), `--skip-figures`. An explicit `random_state` inside `--model-parameters` takes precedence for estimator fitting.
 
 ### Processing contract
 

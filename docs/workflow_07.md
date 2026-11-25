@@ -82,8 +82,9 @@ python -m workflows.07_subgroup_analysis pr-calibration \
   --val-pred /path/to/xgboost_val.csv --ext-pred /path/to/xgboost_ext.csv
 ```
 
-Optional: `--n-bins` (10), `--n-bootstrap` (1000), `--figures` (default:
-tables only).
+Optional: `--n-bins` (10), `--n-bootstrap` (1000), `--random-state`
+(default 42; propagated to PR, calibration, and Brier bootstrap intervals),
+`--figures` (default: tables only).
 Outputs: `data/pr_calibration_summary.csv`, `data/pr_curve_*.csv`,
 `data/calibration_curve_*.csv`, `figures/pr_curves.png`,
 `figures/calibration_curve_*.png`. Prediction tables accept integer labels or

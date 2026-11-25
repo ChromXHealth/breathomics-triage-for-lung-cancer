@@ -1,0 +1,14 @@
+# Example schema for workflow 04; this is not the source-study split.
+# Pass a study-authorized copy via --split-config, or use the repeated CLI
+# project/prefix arguments instead.
+discovery:
+  projects:
+    - PROJECT_A
+    - PROJECT_B
+  id_prefixes:
+    - "PROJECT_D#0"
+external:
+  projects:
+    - PROJECT_C
+  id_prefixes:
+    - "PROJECT_D#1"

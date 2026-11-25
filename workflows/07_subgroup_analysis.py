@@ -59,6 +59,7 @@ from src.io import write_csv
 from src.modelling import (
     DEFAULT_MODEL_PARAMETERS,
     MODEL_REGISTRY,
+    apply_random_state,
     cross_validated_predictions,
     select_binary_labels,
 )
@@ -245,7 +246,7 @@ def run_subgroups(args: argparse.Namespace) -> None:
             for spec in DEFAULT_SUBGROUP_SPECS:
                 if spec.source_column not in frame.columns:
                     continue
-                groups = [group.label for group in resolve_groups(spec, frame)]
+                resolve_groups(spec, frame)
                 if spec.kind == "lc_stage":
                     vis_label = build_vis_labels(frame, spec)
                     plot_frame = frame.assign(vis_label=vis_label)
@@ -435,9 +436,14 @@ def run_pr_calibration(args: argparse.Namespace) -> None:
             n_bins=args.n_bins,
             return_ci=True,
             n_bootstrap=args.n_bootstrap,
+            random_state=args.random_state,
         )
         brier = compute_brier_score(
-            labels, scores, return_ci=True, n_bootstrap=args.n_bootstrap
+            labels,
+            scores,
+            return_ci=True,
+            n_bootstrap=args.n_bootstrap,
+            random_state=args.random_state,
         )
 
         rows.append(
@@ -711,6 +717,7 @@ def run_confounder_models(args: argparse.Namespace) -> None:
             positive = int((discovery_frame["label"] == "LC").sum())
             parameters.update(CONFOUNDER_XGBOOST_PARAMETERS)
             parameters["scale_pos_weight"] = negative / positive if positive else 1.0
+        parameters = apply_random_state(name, parameters, args.random_state)
 
         train_pred, val_pred, independent = cross_validated_predictions(
             MODEL_REGISTRY[name],
@@ -967,7 +974,7 @@ def parse_args() -> argparse.Namespace:
     shap_parser.add_argument(
         "--max-display", type=int, default=20, help="Features shown in the beeswarm plot."
     )
-    shap_parser.add_argument("--random-state", type=int, default=None)
+    shap_parser.add_argument("--random-state", type=int, default=42)
     shap_parser.add_argument(
         "--figures",
         action="store_true",
@@ -988,7 +995,7 @@ def parse_args() -> argparse.Namespace:
     pr_parser.add_argument("--ext-pred", type=Path, required=True)
     pr_parser.add_argument("--n-bins", type=int, default=10)
     pr_parser.add_argument("--n-bootstrap", type=int, default=1000)
-    pr_parser.add_argument("--random-state", type=int, default=None)
+    pr_parser.add_argument("--random-state", type=int, default=42)
     pr_parser.add_argument(
         "--figures",
         action="store_true",
@@ -1015,7 +1022,7 @@ def parse_args() -> argparse.Namespace:
         "--method", choices=("bootstrap", "wilson", "bayesian"), default="bootstrap"
     )
     adjust_parser.add_argument("--n-bootstrap", type=int, default=10000)
-    adjust_parser.add_argument("--random-state", type=int, default=None)
+    adjust_parser.add_argument("--random-state", type=int, default=42)
     adjust_parser.add_argument(
         "--output-dir",
         type=Path,
@@ -1038,7 +1045,7 @@ def parse_args() -> argparse.Namespace:
     )
     roc_parser.add_argument("--cutoff", type=float, default=None)
     roc_parser.add_argument("--n-bootstrap", type=int, default=1000)
-    roc_parser.add_argument("--random-state", type=int, default=None)
+    roc_parser.add_argument("--random-state", type=int, default=42)
     roc_parser.add_argument(
         "--figures",
         action="store_true",
@@ -1061,7 +1068,7 @@ def parse_args() -> argparse.Namespace:
     conf_parser.add_argument("--eval-fold", type=int, default=2)
     conf_parser.add_argument("--min-sensitivity", type=float, default=0.95)
     conf_parser.add_argument("--cv", type=int, default=5)
-    conf_parser.add_argument("--random-state", type=int, default=None)
+    conf_parser.add_argument("--random-state", type=int, default=42)
     conf_parser.add_argument(
         "--figures",
         action="store_true",

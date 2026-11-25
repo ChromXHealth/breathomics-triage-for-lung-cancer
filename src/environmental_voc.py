@@ -107,9 +107,12 @@ def classify_environmental_voc(metrics: pd.DataFrame) -> tuple[pd.DataFrame, pd.
 
 def add_voc_information(joint: pd.DataFrame, information: pd.DataFrame) -> pd.DataFrame:
     """Append compound metadata and preserve the source float32 conversion."""
+    require_columns(information, ["Alignment ID"])
     info = information.rename(columns={"Alignment ID": "VOC ID"}).copy()
     info["VOC ID"] = info["VOC ID"].astype(str)
-    output = info.merge(joint, on="VOC ID", how="right")
+    if info["VOC ID"].duplicated().any():
+        raise ValueError("Alignment ID must be unique in the VOC annotation table.")
+    output = info.merge(joint, on="VOC ID", how="right", validate="one_to_one")
     for column in ("Average Rt(min)", "Quant mass", "S/N average"):
         output[column] = output[column].astype(np.float32)
     return output

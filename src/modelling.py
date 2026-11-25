@@ -10,12 +10,28 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import RFECV
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import KFold, StratifiedKFold
+from sklearn.model_selection import StratifiedKFold
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import LabelEncoder, scale
 from sklearn.svm import SVC
 
-from .evaluation import require_columns
+from .evaluation import require_columns, require_unique_sample_ids
+
+DEFAULT_RANDOM_STATE = 42
+RANDOM_STATE_ESTIMATORS = {"random_forest", "svm", "xgboost"}
+
+
+def apply_random_state(
+    model_name: str, parameters: dict[str, Any], random_state: int = DEFAULT_RANDOM_STATE
+) -> dict[str, Any]:
+    """Return model parameters with a default seed for supported estimators.
+
+    An explicit ``random_state`` in ``parameters`` always takes precedence.
+    """
+    resolved = parameters.copy()
+    if model_name in RANDOM_STATE_ESTIMATORS:
+        resolved.setdefault("random_state", random_state)
+    return resolved
 
 
 def _build_xgboost(**parameters: Any) -> Any:
@@ -113,12 +129,20 @@ def discovery_covariates(discovery_clinical: pd.DataFrame) -> pd.DataFrame:
     return output
 
 
-def external_covariates(external_clinical: pd.DataFrame) -> pd.DataFrame:
-    """Create externally standardized age and a male indicator."""
+def external_covariates(
+    external_clinical: pd.DataFrame, discovery_clinical: pd.DataFrame
+) -> pd.DataFrame:
+    """Apply discovery-derived age scaling and create the male indicator."""
     require_columns(external_clinical, ["SampleID", "age", "gender"])
+    require_columns(discovery_clinical, ["age"])
+    discovery_age = discovery_clinical["age"].astype(float)
+    mean = float(discovery_age.mean())
+    standard_deviation = float(discovery_age.std(ddof=0))
+    if not np.isfinite(standard_deviation) or standard_deviation == 0:
+        raise ValueError("Discovery age must have a non-zero standard deviation.")
     output = external_clinical[["SampleID", "age", "gender"]].copy()
     output["gender"] = output["gender"].map(lambda value: float(value == "M"))
-    output["age"] = scale(output["age"].astype(float))
+    output["age"] = (output["age"].astype(float) - mean) / standard_deviation
     return output
 
 
@@ -129,10 +153,19 @@ def select_model_frame(
 ) -> pd.DataFrame:
     """Select marker features and optionally attach age and gender covariates."""
     require_columns(measurements, ["SampleID", "label", *markers])
+    require_unique_sample_ids(measurements)
     selected = measurements[["SampleID", "label", *markers]].copy()
     if covariates is not None:
         require_columns(covariates, ["SampleID"])
-        selected = selected.merge(covariates, on="SampleID", how="left")
+        require_unique_sample_ids(covariates)
+        unmatched = set(selected["SampleID"]) - set(covariates["SampleID"])
+        if unmatched:
+            raise ValueError(
+                f"Covariates are missing for {len(unmatched)} measurement SampleID(s)."
+            )
+        selected = selected.merge(
+            covariates, on="SampleID", how="left", validate="one_to_one"
+        )
     return selected
 
 
@@ -192,8 +225,18 @@ def cross_validated_predictions(
 ) -> tuple[pd.DataFrame, pd.DataFrame, dict[int, pd.DataFrame]]:
     """Generate fold-wise training, validation, and independent-set predictions."""
     require_columns(training_frame, ["SampleID", "label"])
+    require_unique_sample_ids(training_frame)
+    expected_features = training_frame.columns[2:].tolist()
+    if not expected_features:
+        raise ValueError("The training frame does not contain feature columns.")
     for frame in independent_frames:
         require_columns(frame, ["SampleID", "label"])
+        require_unique_sample_ids(frame)
+        if frame.columns[2:].tolist() != expected_features:
+            raise ValueError(
+                "Independent-set feature columns and order must exactly match "
+                "the training frame after SampleID and label."
+            )
 
     encoder = LabelEncoder()
     features = training_frame.iloc[:, 2:].to_numpy(dtype=float)

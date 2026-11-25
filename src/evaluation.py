@@ -13,7 +13,6 @@ from sklearn.metrics import (
     f1_score,
     precision_recall_curve,
     precision_score,
-    recall_score,
     roc_auc_score,
     roc_curve,
 )
@@ -174,10 +173,28 @@ def evaluation_summary(
 
 
 def require_columns(frame: pd.DataFrame, columns: list[str]) -> None:
-    """Raise a clear error when required prediction columns are absent."""
+    """Raise clear errors for absent or duplicated required columns."""
     missing = [column for column in columns if column not in frame.columns]
     if missing:
         raise ValueError(f"Missing required columns: {', '.join(missing)}")
+    duplicated = [
+        column
+        for column in dict.fromkeys(columns)
+        if int((frame.columns == column).sum()) > 1
+    ]
+    if duplicated:
+        raise ValueError(f"Duplicated required columns: {', '.join(duplicated)}")
+
+
+def require_unique_sample_ids(frame: pd.DataFrame) -> None:
+    """Require non-missing, unique identifiers for one-to-one table joins."""
+    require_columns(frame, ["SampleID"])
+    if frame["SampleID"].isna().any():
+        raise ValueError("SampleID contains missing values.")
+    duplicated = frame.loc[frame["SampleID"].duplicated(), "SampleID"].astype(str).unique()
+    if len(duplicated):
+        examples = ", ".join(duplicated[:5])
+        raise ValueError(f"SampleID must be unique; duplicated identifiers include: {examples}")
 
 
 def precision_recall_with_interval(

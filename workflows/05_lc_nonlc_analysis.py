@@ -89,7 +89,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--opls-cv", type=int, default=5)
     parser.add_argument("--cv", type=int, default=5, help="RFECV folds.")
     parser.add_argument("--rfe-jobs", type=int, default=5)
-    parser.add_argument("--random-state", type=int, default=None)
+    parser.add_argument("--random-state", type=int, default=42)
     parser.add_argument("--fdr-threshold", type=float, default=0.05)
     parser.add_argument("--vip-threshold", type=float, default=1.0)
     parser.add_argument("--auroc-threshold", type=float, default=0.6)
@@ -198,7 +198,7 @@ def run(args: argparse.Namespace) -> None:
             f"{len(markers)} unreviewed flagged candidates."
         )
     discovery_cfd = discovery_covariates(clinical)
-    external_cfd = external_covariates(external_clinical)
+    external_cfd = external_covariates(external_clinical, clinical)
     postoperative = prepare_postoperative_frame(postoperative_voc)
     discovery_model = select_model_frame(voc, markers, discovery_cfd)
     external_model = select_model_frame(external_voc, markers, external_cfd)

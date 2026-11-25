@@ -9,6 +9,12 @@ happen outside these workflows, because instrument exports and eligibility
 rules differ between studies. This document explains what to prepare; the
 column-level contracts live in `data_schema.md`.
 
+The public 200-sample External Test Set example on Mendeley Data
+([DOI: 10.17632/g7w5yjsr9g.1](https://doi.org/10.17632/g7w5yjsr9g.1)) contains
+raw Agilent `.d` acquisition files only. It has no clinical labels or derived
+feature matrices and must undergo the upstream preparation described here
+before any compatible analysis steps can be attempted.
+
 ## Preparation Checklist
 
 Prepare five CSV tables before running workflow 01. Column names are

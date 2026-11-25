@@ -1,18 +1,22 @@
 # Toward breathomics-guided pre-imaging triage for lung cancer detection
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24504321.svg)](https://doi.org/10.5281/zenodo.24504321)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24504320.svg)](https://doi.org/10.5281/zenodo.24504320)
 
 Analysis source code associated with the Cell manuscript *Toward
 breathomics-guided pre-imaging triage for lung cancer detection*, including
 the figure code embedded in the analysis workflows.
 
-> **Scope of this release.** This repository fully provides the code for
-> data processing (workflow 01–03), cohort splitting (04), marker discovery
-> (05), and model training and evaluation (06). The subgroup and post-hoc
-> analyses (workflow 07) and some figure generation depend on sensitive
-> clinical and imaging information (imaging/pathology labels, sampling-site
-> records) that cannot be shared, so those parts are provided as reference
-> code only and are not fully reproducible without the study data.
+This repository is shared for research transparency and as a reference for
+other researchers studying the analysis. It is not intended to be a turnkey or
+general-purpose software package. External contributions are not currently
+accepted.
+
+> **Scope of this release.** Workflows 01–06 are provided in full as
+> executable analysis code. Workflow 07 and some figure generation are also
+> provided, but depend on sensitive clinical and imaging information. Public
+> synthetic-data tests verify execution, not the manuscript's numerical
+> results. Numerical and graphical reproduction requires authorized access to
+> the study data and the study-specific assets identified in the documentation.
 
 ## Study Summary
 
@@ -45,45 +49,91 @@ and quality control (01–04), marker analysis and modelling (05–06), and the
 subgroup / post-hoc analyses (07). Figures are produced inside the analysis
 workflows from computed statistics.
 
-The repository does not contain participant-level data, clinical labels,
-trained model artifacts, prediction outputs, analysis results, or test code.
-Numerical and graphical reproduction requires authorized access to the
-corresponding study data.
+This GitHub repository does not itself contain participant-level data tables,
+clinical labels, trained model artifacts, prediction outputs, or analysis
+results. A separate public raw-data example is described under “Data
+Availability.” Study-specific cohort assignments and the final reviewed marker
+table must be supplied by an authorized user. Public templates document their
+schemas; they do not encode the source study's confidential assets.
 
-All source code, configuration, documentation, and working comments in this
-repository are written in English.
+All source code, configuration, workflow documentation, and working comments
+in this repository are written in English.
 
 ## Layout
 
 - `src/`: reusable analysis modules.
 - `workflows/`: ordered analysis entry points (01–07); workflow 07 is a
   subcommand-style collection of subgroup and post-hoc analyses.
-- `configs/`: data, model, evaluation, and figure configuration.
-- `docs/`: data contracts, workflow documentation, and source mappings
+- `configs/`: preprocessing and batch parameters plus schemas for
+  study-specific cohort and marker assets.
+- `docs/`: data contracts, workflow documentation, and figure-input rules
   (start with `docs/README.md` for the documentation guide).
+- `examples/`: synthetic-data generation and an end-to-end smoke runner.
+- `tests/`: unit, contract, reproducibility, and smoke tests.
 
-## Status
+## Analysis Status
 
-All planned workflows are migrated from the internal research notebooks
-without changing model parameters, thresholds, sample definitions, or
-reported results. Each workflow document in `docs/` lists any intentional
-deviation from its source notebook.
+The workflows were migrated from the internal research notebooks without
+intentionally retuning model parameters, thresholds, or sample definitions.
+Known differences are documented in each workflow. In particular, workflow
+02 fits ComBat on the public LC/non-LC + environmental correction basis
+instead of the original joint-cohort basis; numerical equivalence with the
+original correction is therefore not asserted.
 
-## Requirements
+## Requirements and Tested Platform
 
-Python 3.9.18 is the reference runtime. See `environment.yml` and
-`requirements.lock` for the dependency specification. Create and activate an
-isolated environment before running workflows.
+The reference runtime is Python 3.9.18. This repository was prepared and
+tested on **macOS 27.2.1 (26B131)** using the `breath-voc-analysis` Conda
+environment. Other operating systems and platform/version combinations have
+not been tested. This describes the current verification scope and does not
+imply that other platforms are incompatible.
 
-## Execution
+Create and activate the environment:
 
-Run module entry points from this repository's root. This repository does
-not resolve paths in any parent or sibling repository; every input and
-output path must be supplied explicitly.
+```bash
+conda env create -f environment.yml
+conda activate breath-voc-analysis
+python -m pip check
+```
+
+If the environment already exists, only the activation command is needed.
+`requirements.txt` records the complete direct and transitive runtime
+dependency closure resolved from the reference environment. The Conda file
+pins the direct analysis dependencies; both describe the release runtime.
+Test-only tools are intentionally excluded from both release dependency files.
+
+## Optional Synthetic Execution Check
+
+The optional synthetic example contains no participant-derived data. It checks
+input preparation, workflow interfaces, output contracts, and model execution
+with reduced computation settings; it is not a supported application setup.
+
+```bash
+conda activate breath-voc-analysis
+python examples/generate_synthetic_data.py --output-dir examples/synthetic-data
+bash examples/run_end_to_end.sh
+```
+
+Generated inputs and outputs are ignored by Git. To choose another location,
+set `SYNTHETIC_DATA_DIR` and `SYNTHETIC_OUTPUT_DIR` when calling the runner;
+see `examples/README.md`.
+
+For development only, install the test tools and run the automated tests:
+
+```bash
+python -m pip install pytest==8.4.2 ruff==0.17.6
+python -m pytest -q
+python -m ruff check src workflows tests examples
+```
+
+## Execution with Authorized Study Data
+
+Run module entry points from this repository's root. Every input and output
+path must be supplied explicitly; no parent or sibling repository is searched.
 
 Upstream data preparation (instrument formatting, clinical eligibility
 filtering, and the breath/environmental separation) is assumed complete
-before the workflows run; the preparation contract is documented in
+before the workflows run. The preparation contract is documented in
 `docs/workflow_00.md` (contract only, no executable entry point) and the
 column-level contracts in `docs/data_schema.md`.
 
@@ -98,22 +148,60 @@ python -m workflows.01_snr_qc \
   --output-dir /path/to/qc_outputs
 ```
 
-See `docs/README.md` for the documentation guide, then the numbered
-workflow documents for the full command contract. The execution order is:
-SNR quality control and sensitivity correction (01), batch correction (02),
-environmental VOC analysis (03), data split (04), differential marker
-analysis (05), modelling (06), and subgroup / post-hoc analyses (07).
+See `docs/README.md` for the documentation guide, then the numbered workflow
+documents for the full command contract. The execution order is SNR quality
+control and sensitivity correction (01), batch correction (02), environmental
+VOC analysis (03), data split (04), differential marker analysis (05),
+modelling (06), and subgroup / post-hoc analyses (07).
 
-## Data
+## Data Availability
 
-No study data are distributed with this repository. Input contracts are
-documented in `docs/data_schema.md`. Paths to authorized local inputs must
-be supplied through command-line arguments.
+### Public example dataset
+
+A public example comprising **200 exhaled-breath samples from the External
+Test Set** is available from Mendeley Data:
+
+- Dataset: <https://data.mendeley.com/datasets/g7w5yjsr9g/1>
+- DOI: <https://doi.org/10.17632/g7w5yjsr9g.1>
+
+The archive contains raw Agilent GC-MS acquisition files (`.d` format) only.
+It does not include clinical labels, demographic variables, or derived feature
+matrices. The raw files require upstream instrument formatting before they can
+be used with the analysis contracts in `docs/data_schema.md`; by themselves,
+they do not enable end-to-end reproduction of the manuscript analysis.
+
+### Controlled additional resources
+
+For participant-privacy and commercial-confidentiality reasons, the complete
+dataset, participant labels and clinical records, trained models, and related
+study-specific assets are **not publicly distributed by default**. Researchers
+may contact the authors to request access. Provision is subject to review and
+approval through the process described in the associated manuscript's Data
+Availability statement; submitting a request does not guarantee access. Do not
+attach participant-level or otherwise sensitive records to GitHub issues,
+pull requests, or other public channels.
+
+## Reproducibility Levels
+
+- **Execution reproducibility:** public synthetic fixtures, deterministic
+  random seeds, unit tests, and smoke workflows verify the released code.
+- **Numerical reproduction:** authorized study data, the source-study cohort
+  split, and the final reviewed marker table are required. Documented public
+  workflow deviations must be considered when comparing results.
+
+## Citation and Versioning
+
+The author list and software citation are maintained in `CITATION.cff`. The
+README badge uses the Zenodo **concept DOI**, which resolves to the latest
+archived version. Each GitHub release receives its own version-specific DOI.
+Please cite both the associated manuscript and the software version used.
+
+The current development version is **v1.0.1-rc**; changes relative to the
+initial archive are listed in `CHANGELOG.md`.
 
 ## License
 
-This repository is released under the MIT License; see `LICENSE`. The author
-list for citation is maintained in `CITATION.cff`.
+This repository is released under the MIT License; see `LICENSE`.
 
 ## Figure Inputs
 

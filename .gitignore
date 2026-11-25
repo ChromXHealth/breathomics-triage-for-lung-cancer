@@ -15,13 +15,22 @@ results/
 predictions/
 models/
 analysis-output/
+examples/synthetic-data/
+examples/synthetic-output/
+
+# Test and quality-tool caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
 # Study-specific reference material (internal notebooks and the manuscript
 # PDF; never for public release)
 .ref-notebooks/
 
-# Local working notes (explicitly not for git, see the file header)
+# Local working notes and temporary Chinese review aids (not release material)
 questions_log.md
+REVIEW_CHECKLIST.md
 
 # Study-specific cohort split definition (kept local, test-only)
 configs/cohort_split.yaml
